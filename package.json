@@ -1,0 +1,30 @@
+{
+  "name": "javascript-tutorial-2d-game",
+  "version": "1.0.0",
+  "description": "2D platform game to teach and learn javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx http-server ./public -p 8080 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llipe/javascript-tutorial-2d-game.git"
+  },
+  "keywords": [
+    "2dgame",
+    "game",
+    "platform",
+    "javascript",
+    "tutorial"
+  ],
+  "author": "Felipe Mallea",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/llipe/javascript-tutorial-2d-game/issues"
+  },
+  "homepage": "https://github.com/llipe/javascript-tutorial-2d-game#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

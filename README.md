@@ -43,7 +43,7 @@ This project is licensed under the MIT License.
 ## Acknowledgements ##
 We would like to acknowledge the following resources that inspired and helped in the development of this project:
 
-ExampleGame1
-ExampleGame2
-Contact
-For any questions or inquiries, please contact the project team at [email@example.com].
+* Assets, including characters, tiles and backgrounds, were downloaded from the awesome freebies offered by [Game Art 2D](https://www.gameart2d.com/freebies.html)
+
+## Contact
+For any questions or inquiries, please contact the project team at [tbd at domain].

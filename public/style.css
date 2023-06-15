@@ -1,0 +1,15 @@
+body {
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* FOR FULLSCREEN 
+body {
+    margin: 0;
+    padding: 0;
+}*/
+
+#display > * {
+  border: 1px solid black;
+}
