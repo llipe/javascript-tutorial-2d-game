@@ -79,6 +79,8 @@ export class Character {
 
   changeState() {}
 
+  updateSprite() {}
+
   async #loadAssets() {
     return new Promise((resolve, reject) => {
       this.#loadTextures()
