@@ -7,6 +7,7 @@ export class Character {
     this.sprites = spritesObject; // object with states as keys and array of paths for values
     this.sprite = null; // initial & active sprite
     this.textures = {}; // empty object for textures
+    this.horizontalMovementSpeed = 10; // default 10
   }
 
   addToStage() {
@@ -17,12 +18,27 @@ export class Character {
   }
 
   changeState(state) {
-    console.log(`State: ${state}`);
+    console.log(`Changing state from ${this.state} to ${state}`);
+    this.state = this.states[`${state}`];
+    let { x, y } = this.getPosition();
+    this.app.stage.removeChild(this.sprite);
+
+    this.sprite = new PIXI.AnimatedSprite(this.textures[`${this.state}`]);
+    this.sprite.scale.x = 0.5;
+    this.sprite.scale.y = 0.5;
+    this.sprite.animationSpeed = 1 / 6; // 6 fps
+    this.sprite.play();
+    this.sprite.x = x;
+    this.sprite.y = y;
+    this.app.stage.addChild(this.sprite);
   }
 
   updateSprite() {}
 
-  changePosition(x, y) {
+  getPosition() {
+    return { x: this.sprite.x, y: this.sprite.y };
+  }
+  updatePosition(x, y) {
     this.sprite.x = x;
     this.sprite.y = y;
     return { x: this.sprite.x, y: this.sprite.y };

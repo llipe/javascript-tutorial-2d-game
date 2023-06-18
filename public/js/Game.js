@@ -21,7 +21,7 @@ export class Game {
     new Ninja(this.app).load().then((obj) => {
       this.character = obj;
       this.character.addToStage();
-      this.character.changePosition(400, 400);
+      this.character.updatePosition(400, 400);
     });
 
     PIXI.Assets.load("../img/graveyardtilesetnew/png/BG.png").then(() => {
@@ -47,11 +47,27 @@ export class Game {
   }
   inputGameStart() {}
   inputGameSelect() {}
-  inputCharacterMoveRight() {}
-  inputCharacterMoveLeft() {}
+  inputCharacterMoveRight() {
+    let { x, y } = this.character.getPosition();
+    this.character.updatePosition(
+      x + this.character.horizontalMovementSpeed,
+      y
+    );
+    this.character.changeState("run");
+  }
+  inputCharacterMoveLeft() {
+    let { x, y } = this.character.getPosition();
+    this.character.updatePosition(
+      x - this.character.horizontalMovementSpeed,
+      y
+    );
+  }
   inputCharacterJump() {
     console.log("inputCharacterJump");
-    this.character.changePosition(Math.random()*this.app.view.width, Math.random()*this.app.view.height);
+    this.character.updatePosition(
+      Math.random() * this.app.view.width,
+      Math.random() * this.app.view.height
+    );
   }
   inputCharacterAttack() {}
 }

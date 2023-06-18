@@ -5,9 +5,13 @@ export class Controller {
     this.game = game
   }
   moveUp() {}
-  moveRight() {}
+  moveRight() {
+    this.game.inputCharacterMoveRight();
+  }
   moveDown() {}
-  moveLeft() {}
+  moveLeft() {
+    this.game.inputCharacterMoveLeft();
+  }
 
   buttonA() {}
   buttonB() {
