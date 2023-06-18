@@ -1,86 +1,33 @@
-import { Character } from "./Character.js";
+import { Controller } from "./Controller.js";
+import { Game } from "./Game.js";
 let type = "WebGL";
 if (!PIXI.utils.isWebGLSupported()) {
   type = "canvas";
 }
+let game = new Game("#display");
+let controller = new Controller(game);
+game.start();
 
-let app = new PIXI.Application({
-  width: 960,
-  height: 540,
-  antialias: true, // default: false
-  transparent: false, // default: false
-  resolution: 1,
-});
-app.renderer.background.color = 0x061639;
-/** FOR FULLSCREEN
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
-app.renderer.autoDensity = true;
-app.resizeTo = window;
- */
-
-const displayDiv = document.querySelector("#display");
-displayDiv.appendChild(app.view);
-
-let ninja = new Character(app, "Super Ninja", Character.Types.Ninja);
-ninja.load().then(() => {
-  ninja.addToStage();
-});
-
-// PIXI.Assets.load([
-//   "../img/ninja/png/Idle__000.png",
-//   "../img/ninja/png/Idle__001.png",
-//   "../img/ninja/png/Idle__002.png",
-//   "../img/ninja/png/Idle__003.png",
-//   "../img/ninja/png/Idle__004.png",
-//   "../img/ninja/png/Idle__005.png",
-//   "../img/ninja/png/Idle__006.png",
-//   "../img/ninja/png/Idle__007.png",
-//   "../img/ninja/png/Idle__008.png",
-//   "../img/ninja/png/Idle__009.png",
-// ]).then(() => {
-//   let ninjaImages = [
-//     "../img/ninja/png/Idle__000.png",
-//     "../img/ninja/png/Idle__001.png",
-//     "../img/ninja/png/Idle__002.png",
-//     "../img/ninja/png/Idle__003.png",
-//     "../img/ninja/png/Idle__004.png",
-//     "../img/ninja/png/Idle__005.png",
-//     "../img/ninja/png/Idle__006.png",
-//     "../img/ninja/png/Idle__007.png",
-//     "../img/ninja/png/Idle__008.png",
-//     "../img/ninja/png/Idle__009.png",
-//   ];
-
-//   let ninjaTextureArray = [];
-//   for (let i = 0; i < ninjaImages.length; i++) {
-//     const texture = PIXI.Texture.from(ninjaImages[i]);
-//     ninjaTextureArray.push(texture);
-//   }
-//   let nijaSprite = new PIXI.AnimatedSprite(ninjaTextureArray);
-//   nijaSprite.animationSpeed = 1 / 6; // 6 fps
-//   nijaSprite.play();
-
-//   app.stage.addChild(nijaSprite);
-// });
-
-PIXI.Assets.load("../img/graveyardtilesetnew/png/BG.png").then(() => {
-  const background = PIXI.Sprite.from(
-    PIXI.Texture.from("../img/graveyardtilesetnew/png/BG.png")
-  );
-  app.stage.scale.x = app.view.width / background.width;
-  app.stage.scale.y = app.view.height / background.height;
-  app.stage.addChild(background);
-});
-
-// Add a variable to count up the seconds our demo has been running
-let elapsed = 0.0;
-// Tell our application's ticker to run a new callback every frame, passing
-// in the amount of time that has passed since the last tick
-app.ticker.add((delta) => {
-  // Add the time to our total elapsed time
-  elapsed += delta;
-  // Update the sprite's X position based on the cosine of our elapsed time.  We divide
-  // by 50 to slow the animation down a bit...
-  //nijaSprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
-});
+const onKeyDown = (key) => {
+  // W Key is 87 & Up arrow is 38
+  if (key.keyCode === 87 || key.keyCode === 38) {
+    controller.moveUp();
+  }
+  // S Key is 83 & Down arrow is 40
+  if (key.keyCode === 83 || key.keyCode === 40) {
+    controller.moveDown();
+  }
+  // A Key is 65 & Left arrow is 37
+  if (key.keyCode === 65 || key.keyCode === 37) {
+    controller.moveLeft();
+  }
+  // D Key is 68 & Right arrow is 39
+  if (key.keyCode === 68 || key.keyCode === 39) {
+    controller.moveRight();
+  }
+  // Spacebar is 32
+  if (key.keyCode === 32) {
+    controller.buttonB();
+  }
+};
+document.addEventListener("keydown", onKeyDown);
