@@ -1,27 +1,37 @@
 import { Game } from "./Game.js";
+import { Character } from "./Character.js";
 export class Controller {
+  static KeyPressingOptions = {
+    KeyPress: "KeyPres",
+    KeyPressingOption: "KeyPressingOption",
+    KeyRelease: "KeyRelease",
+  };
   constructor(game) {
     this.controlType = "SuperNintendo";
-    this.game = game
+    this.game = game;
   }
-  moveUp() {}
-  moveRight() {
-    this.game.inputCharacterMoveRight();
+  moveUp(keyPressingOption) {}
+  moveRight(keyPressingOption) {
+    if (keyPressingOption != Controller.KeyPressingOptions.KeyRelease) {
+      this.game.inputCharacterMoveRight();
+    } else {
+      this.game.inputCharacterMoveRightStop();
+    }
   }
-  moveDown() {}
-  moveLeft() {
+  moveDown(keyPressingOption) {}
+  moveLeft(keyPressingOption) {
     this.game.inputCharacterMoveLeft();
   }
 
-  buttonA() {}
-  buttonB() {
+  buttonA(leyPressingOption) {}
+  buttonB(KeyPressingOption) {
     this.game.inputCharacterJump();
   }
-  buttonX() {}
-  buttonY() {}
-  buttonL() {}
-  buttonR() {}
+  buttonX(keyPressingOption) {}
+  buttonY(keyPressingOption) {}
+  buttonL(keyPressingOption) {}
+  buttonR(keyPressingOption) {}
 
-  buttonStart() {}
-  buttonSelet() {}
+  buttonStart(keyPressingOption) {}
+  buttonSelet(keyPressingOption) {}
 }

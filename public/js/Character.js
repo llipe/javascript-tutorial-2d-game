@@ -1,4 +1,15 @@
 export class Character {
+  static MovingDirections = {
+    NOT_MOVING: "NOT_MOVING",
+    RIGHT: "RIGHT",
+    LEFT: "LEFT",
+    JUMPING: "JUMPING",
+    JUMPING_RIGHT: "JUMPING_RIGHT",
+    JUMPING_LEFT: "JUMPING",
+  };
+
+  #movingDirection = Character.MovingDirections.NOT_MOVING;
+
   constructor(app, name, statesObject, spritesObject) {
     this.app = app; // PIXI app
     this.name = name; // Any name to identify thge type of character
@@ -8,6 +19,19 @@ export class Character {
     this.sprite = null; // initial & active sprite
     this.textures = {}; // empty object for textures
     this.horizontalMovementSpeed = 10; // default 10
+  }
+
+  get movingDirection() {
+    return this.#movingDirection;
+  }
+  set movingDirection(direction) {
+    if (Character.MovingDirections[`${direction}`] == direction) {
+      this.#movingDirection = Character.MovingDirections[`${direction}`];
+      console.log(this.#movingDirection);
+      return this.#movingDirection;
+    } else {
+      return false;
+    }
   }
 
   addToStage() {

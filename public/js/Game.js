@@ -1,3 +1,4 @@
+import { Character } from "./Character.js";
 import { Ninja } from "./Ninja.js";
 
 export class Game {
@@ -53,7 +54,16 @@ export class Game {
       x + this.character.horizontalMovementSpeed,
       y
     );
-    this.character.changeState("run");
+    if (this.character.movingDirection == Character.MovingDirections.RIGHT) {
+      // keep moving
+    } else {
+      this.character.movingDirection = Character.MovingDirections.RIGHT;
+      this.character.changeState("run");
+    }
+  }
+  inputCharacterMoveRightStop() {
+    this.character.movingDirection = Character.MovingDirections.NOT_MOVING;
+    this.character.changeState("idle");
   }
   inputCharacterMoveLeft() {
     let { x, y } = this.character.getPosition();

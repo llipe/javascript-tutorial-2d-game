@@ -53,6 +53,18 @@ export class Ninja extends Character {
         "../img/ninja/png/Run__008.png",
         "../img/ninja/png/Run__009.png",
       ],
+      jump: [
+        "../img/ninja/png/Jump__000.png",
+        "../img/ninja/png/Jump__001.png",
+        "../img/ninja/png/Jump__002.png",
+        "../img/ninja/png/Jump__003.png",
+        "../img/ninja/png/Jump__004.png",
+        "../img/ninja/png/Jump__005.png",
+        "../img/ninja/png/Jump__006.png",
+        "../img/ninja/png/Jump__007.png",
+        "../img/ninja/png/Jump__008.png",
+        "../img/ninja/png/Jump__009.png",
+      ],
     };
     super(app, name, statesObject, spritesObject);
     this.state = this.states[`${initialState}`];
