@@ -1,11 +1,11 @@
 # 2D Platformer - Learning JS in the process #
 ## Overview
 This project aims to develop a simple 2D platform game that provides a fun and engaging way for people to learn software development. Unlike traditional coding exercises like building REST APIs or calculators, this game offers a visually appealing and interactive experience. The game will be built using JavaScript and will feature simple battle mechanics.
-## ToDo
-- [x] Base README.md
-- [ ] Update README.md with correct info
-- [ ] Define base game requirements
-- [ ] Define iteration structure for the game
+
+## How to read the execution
+The central starting point of the application is the index.js file, serving as the main entry point. Within this file, two crucial objects are instantiated: a Game object and a Controller object. The index.js file seamlessly connects these components by relaying keyDowns and keyUps events to the Controller, which, in turn, maps them to corresponding actions within the game.
+
+Digging deeper into the codebase, the Game object contains a Ninja instance that inherits from the Character class. While the Character class encapsulates most of the shared behaviors, the Ninja class takes on the responsibility of implementing specific states and actions unique to this character archetype. This modular design allows for clear separation of concerns, enabling the Character class to cater to multiple entities while granting the Ninja class the flexibility to introduce its own distinct functionalities.
 
 ## Features
 2D platform game: The game will be set in a 2D environment with platforms, obstacles, and enemies for the player to navigate.
