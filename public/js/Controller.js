@@ -20,7 +20,11 @@ export class Controller {
   }
   moveDown(keyPressingOption) {}
   moveLeft(keyPressingOption) {
-    this.game.inputCharacterMoveLeft();
+    if (keyPressingOption != Controller.KeyPressingOptions.KeyRelease) {
+      this.game.inputCharacterMoveLeft();
+    } else {
+      this.game.inputCharacterMoveLeftStop();
+    }
   }
 
   buttonA(leyPressingOption) {}

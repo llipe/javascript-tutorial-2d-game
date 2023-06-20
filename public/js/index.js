@@ -8,6 +8,7 @@ let game = new Game("#display");
 let controller = new Controller(game);
 game.start();
 
+// onKeyDown & onKeyUp can be put on a single function with KeyPressingOptions set properly
 const onKeyDown = (key) => {
   let KeyPressingOptions =
     key.repeat == false
@@ -54,7 +55,8 @@ const onKeyUp = (key) => {
   }
   // Spacebar is 32
   if (key.keyCode === 32) {
-    controller.buttonB(KeyPressingOptions);
+    // Only jump on press, no up
+    // controller.buttonB(KeyPressingOptions);
   }
 };
 document.addEventListener("keydown", onKeyDown);

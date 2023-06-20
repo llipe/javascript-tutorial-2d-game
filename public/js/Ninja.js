@@ -68,6 +68,35 @@ export class Ninja extends Character {
     };
     super(app, name, statesObject, spritesObject);
     this.state = this.states[`${initialState}`];
-    this.horizontalMovementSpeed = 25;
+    this.horizontalMovementSpeed = 10;
+  }
+
+  get horizontalMovingDirection() {
+    return super.horizontalMovingDirection;
+  }
+  set horizontalMovingDirection(direction) {
+    super.horizontalMovingDirection = direction;
+    // if HorizontalMovingDirections exists
+    if (Character.HorizontalMovingDirections[`${direction}`] == direction) {
+      // Set the correct animations
+      switch (direction) {
+        case Character.HorizontalMovingDirections.RIGHT:
+          this.state = this.states["run"];
+          this.updateSprite();
+          break;
+        case Character.HorizontalMovingDirections.LEFT:
+          this.state = this.states["run"];
+          this.updateSprite();
+          this.sprite.anchor.x = 0.5;
+          this.sprite.scale.x *= -1;
+          this.sprite.anchor.x = 1;
+          break;
+        case Character.HorizontalMovingDirections.NOT_MOVING:
+          this.state = this.states["idle"];
+          this.updateSprite();
+          break;
+      }
+    }
+    return this.horizontalMovingDirection;
   }
 }

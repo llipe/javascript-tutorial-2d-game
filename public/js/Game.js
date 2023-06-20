@@ -43,41 +43,26 @@ export class Game {
       elapsed += delta;
       // Update the sprite's X position based on the cosine of our elapsed time.  We divide
       // by 50 to slow the animation down a bit...
-      //nijaSprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+      // nijaSprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+      //this.character.move();
     });
   }
   inputGameStart() {}
   inputGameSelect() {}
   inputCharacterMoveRight() {
-    let { x, y } = this.character.getPosition();
-    this.character.updatePosition(
-      x + this.character.horizontalMovementSpeed,
-      y
-    );
-    if (this.character.movingDirection == Character.MovingDirections.RIGHT) {
-      // keep moving
-    } else {
-      this.character.movingDirection = Character.MovingDirections.RIGHT;
-      this.character.changeState("run");
-    }
+    this.character.walkRight();
   }
   inputCharacterMoveRightStop() {
-    this.character.movingDirection = Character.MovingDirections.NOT_MOVING;
-    this.character.changeState("idle");
+    this.character.walkStop();
   }
   inputCharacterMoveLeft() {
-    let { x, y } = this.character.getPosition();
-    this.character.updatePosition(
-      x - this.character.horizontalMovementSpeed,
-      y
-    );
+    this.character.walkLeft();
+  }
+  inputCharacterMoveLeftStop() {
+    this.character.walkStop();
   }
   inputCharacterJump() {
-    console.log("inputCharacterJump");
-    this.character.updatePosition(
-      Math.random() * this.app.view.width,
-      Math.random() * this.app.view.height
-    );
+    this.character.jump();
   }
   inputCharacterAttack() {}
 }
