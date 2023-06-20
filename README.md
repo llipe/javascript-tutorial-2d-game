@@ -7,6 +7,14 @@ The central starting point of the application is the index.js file, serving as t
 
 Digging deeper into the codebase, the Game object contains a Ninja instance that inherits from the Character class. While the Character class encapsulates most of the shared behaviors, the Ninja class takes on the responsibility of implementing specific states and actions unique to this character archetype. This modular design allows for clear separation of concerns, enabling the Character class to cater to multiple entities while granting the Ninja class the flexibility to introduce its own distinct functionalities.
 
+## How to run?
+```bash
+cd to-main-folder
+npm install
+
+npm run start
+```
+
 ## Features
 2D platform game: The game will be set in a 2D environment with platforms, obstacles, and enemies for the player to navigate.
 * **Battle mechanics**: The game will incorporate simple battle mechanics, allowing the player to engage in combat with enemies.
