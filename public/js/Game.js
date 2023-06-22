@@ -1,5 +1,6 @@
 import { Character } from "./Character.js";
 import { Ninja } from "./Ninja.js";
+import { Platform } from "./Platform.js";
 
 export class Game {
   constructor(htmlId) {
@@ -23,6 +24,11 @@ export class Game {
       this.character = obj;
       this.character.addToStage();
       this.character.updatePosition(400, 400);
+    });
+
+    new Platform(this.app, Platform.Type.Floor, 10).load().then((obj) => {
+      obj.addToStage();
+      obj.updatePosition(100,100);
     });
 
     PIXI.Assets.load("../img/graveyardtilesetnew/png/BG.png").then(() => {

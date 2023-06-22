@@ -66,7 +66,7 @@ export class Ninja extends Character {
         "../img/ninja/png/Jump__009.png",
       ],
     };
-    super(app, name, statesObject, spritesObject);
+    super(app, statesObject, spritesObject, name);
     this.state = this.states[`${initialState}`];
     this.horizontalMovementSpeed = 10;
   }
