@@ -52,13 +52,12 @@ export class Platform {
       // Loads all textures and then define the proper Sprite based on the character state
       this.#loadTextures()
         .then(() => {
-          console.log(this.platformType);
           switch (this.platformType) {
             case Platform.Type.FloorPlatform:
-              this.initFloorPlatform(this.scale);
+              this.#initFloorPlatform(this.scale);
               break;
             case Platform.Type.FloatingPlatform:
-              this.initFloatingPlatform(this.scale);
+              this.#initFloatingPlatform(this.scale);
               break;
           }
           resolve(this);
@@ -88,8 +87,11 @@ export class Platform {
     return Promise.all(promises);
   }
 
-  initFloatingPlatform(scale) {
+  #initFloatingPlatform(scale) {
+    // min size 2
     let length = Math.max(this.platformParams.length, 2);
+
+    // Generate the sprites
     this.spriteParts.push(
       PIXI.Sprite.from("../img/graveyardtilesetnew/png/Tiles/Tile (14).png")
     );
@@ -101,11 +103,13 @@ export class Platform {
     this.spriteParts.push(
       PIXI.Sprite.from("../img/graveyardtilesetnew/png/Tiles/Tile (16).png")
     );
-    // For all spriteParts
-    this.spriteParts.forEach((value, index) => {
-      // this.spriteParts[index].scale.x = 0.5; // 64px = 128px * 0.5
-      // this.spriteParts[index].scale.y = 0.5; // 64px = 128px * 0.5
+    
+    // For all spriteParts (adjust scale)
+    this.spriteParts.forEach((value) => {
+      value.scale.x = scale;
+      value.scale.y = scale;
     });
+
     // To space them property
     this.spriteParts[1].x = this.spriteParts[0].width;
     for (let i = 1; i < this.spriteParts.length; i++) {
@@ -114,7 +118,8 @@ export class Platform {
     }
   }
 
-  initFloorPlatform(scale) {
+  #initFloorPlatform(scale) {
+    // min size 2x2
     let length = Math.max(this.platformParams.length, 2);
     let height = Math.max(this.platformParams.height, 2);
 

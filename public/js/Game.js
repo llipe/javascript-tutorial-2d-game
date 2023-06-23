@@ -31,11 +31,6 @@ export class Game {
     //   obj.updatePosition(100,100);
     // });
 
-    // new Platform(this.app, Platform.Type.FloatingPlatform, {length:3}).load().then((obj) => {
-    //   obj.addToStage();
-    //   obj.updatePosition(300,300);
-    // });
-
     let p1 = new Platform(this.app, Platform.Type.FloorPlatform, {length:10, height:2, scale: 0.5}).load().then((obj) => {
       obj.addToStage();
       obj.updatePosition(100, this.app.view.height- 140);
@@ -44,6 +39,11 @@ export class Game {
     let p2 = new Platform(this.app, Platform.Type.FloorPlatform, {length:3, height:2, scale: 0.5}).load().then((obj) => {
       obj.addToStage();
       obj.updatePosition(800, this.app.view.height- 140);
+    });
+
+    let p3 = new Platform(this.app, Platform.Type.FloatingPlatform, {length:3, scale: 0.5}).load().then((obj) => {
+      obj.addToStage();
+      obj.updatePosition(700,200);
     });
 
     PIXI.Assets.load("../img/graveyardtilesetnew/png/BG.png").then(() => {
