@@ -68,7 +68,9 @@ export class Ninja extends Character {
     };
     super(app, statesObject, spritesObject, name);
     this.state = this.states[`${initialState}`];
-    this.horizontalMovementSpeed = 10;
+    this.horizontalMovementSpeed = 5;
+    this.animationSpeed = 1/2;
+    this.scale.x = this.scale.y = 0.25;
   }
 
   get horizontalMovingDirection() {

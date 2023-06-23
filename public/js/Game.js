@@ -23,20 +23,37 @@ export class Game {
     new Ninja(this.app).load().then((obj) => {
       this.character = obj;
       this.character.addToStage();
-      this.character.updatePosition(400, 400);
+      this.character.updatePosition(100, 100);
     });
 
-    new Platform(this.app, Platform.Type.Floor, 10).load().then((obj) => {
+    // new Platform(this.app, Platform.Type.FloorPlatform, {length: 3, height:2, scale: 1}).load().then((obj) => {
+    //   obj.addToStage();
+    //   obj.updatePosition(100,100);
+    // });
+
+    // new Platform(this.app, Platform.Type.FloatingPlatform, {length:3}).load().then((obj) => {
+    //   obj.addToStage();
+    //   obj.updatePosition(300,300);
+    // });
+
+    let p1 = new Platform(this.app, Platform.Type.FloorPlatform, {length:10, height:2, scale: 0.5}).load().then((obj) => {
       obj.addToStage();
-      obj.updatePosition(100,100);
+      obj.updatePosition(100, this.app.view.height- 140);
+    });
+
+    let p2 = new Platform(this.app, Platform.Type.FloorPlatform, {length:3, height:2, scale: 0.5}).load().then((obj) => {
+      obj.addToStage();
+      obj.updatePosition(800, this.app.view.height- 140);
     });
 
     PIXI.Assets.load("../img/graveyardtilesetnew/png/BG.png").then(() => {
       this.background = PIXI.Sprite.from(
         PIXI.Texture.from("../img/graveyardtilesetnew/png/BG.png")
       );
-      this.app.stage.scale.x = this.app.view.width / this.background.width;
-      this.app.stage.scale.y = this.app.view.height / this.background.height;
+      // this.app.stage.scale.x = this.app.view.width / this.background.width;
+      // this.app.stage.scale.y = this.app.view.height / this.background.height;
+      this.background.scale.x = this.app.view.width / this.background.width;
+      this.background.scale.y = this.app.view.height / this.background.height;
       this.app.stage.addChild(this.background);
     });
 

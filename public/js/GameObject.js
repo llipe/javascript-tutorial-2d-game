@@ -16,6 +16,11 @@ export class GameObject {
   #sprites = {};
   sprite = null; // initial & active sprite
   textures = {}; // empty object for textures
+  scale = {
+    x: 1,
+    y: 1,
+  };
+  animationSpeed = 1/6;
 
   // Getter & Setter for #sprites
   get sprites() {
@@ -60,9 +65,9 @@ export class GameObject {
     this.app.stage.removeChild(this.sprite);
 
     this.sprite = new PIXI.AnimatedSprite(this.textures[`${this.state}`]);
-    this.sprite.scale.x = 0.5;
-    this.sprite.scale.y = 0.5;
-    this.sprite.animationSpeed = 1 / 3; // 3 fps
+    this.sprite.scale.x = this.scale.x;
+    this.sprite.scale.y = this.scale.y;
+    this.sprite.animationSpeed = this.animationSpeed;
 
     this.sprite.x = x;
     this.sprite.y = y;
