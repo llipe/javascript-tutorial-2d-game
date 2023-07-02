@@ -34,6 +34,11 @@ const onKeyDown = (key) => {
   if (key.keyCode === 32) {
     controller.buttonB(KeyPressingOptions);
   }
+  // H key is 72
+  if (key.keyCode === 72) {
+    controller.buttonSelect(KeyPressingOptions);
+  }
+  //console.log(key.keyCode);
 };
 const onKeyUp = (key) => {
   let KeyPressingOptions = Controller.KeyPressingOptions.KeyRelease;

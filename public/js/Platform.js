@@ -1,12 +1,9 @@
-import { GameObject } from "./GameObject.js";
-
 export class Platform {
   static Type = {
     FloorPlatform: "FloorPlatform",
     FloatingPlatform: "FloatingPlatform",
   };
 
-  #gameObjects = [];
   spriteParts = [];
   #sprites = {};
   #states = {};

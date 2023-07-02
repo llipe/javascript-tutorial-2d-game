@@ -37,5 +37,7 @@ export class Controller {
   buttonR(keyPressingOption) {}
 
   buttonStart(keyPressingOption) {}
-  buttonSelet(keyPressingOption) {}
+  buttonSelect(keyPressingOption) {
+    this.game.toggleUtils();
+  }
 }
