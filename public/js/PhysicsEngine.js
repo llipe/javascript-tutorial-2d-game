@@ -28,46 +28,117 @@ export class PhysicsEngine {
     let x1 = position.x + obj.vx;
     return { x: x1, y: y1 };
   }
-  detectCollision(objA, objB) {
-    objALeftTopVertex = { x: objA.position.x, y: objA.position.y };
-    objALeftBottomVertex = {
+  detectCollision(objA, objB, callbackFunction = null) {
+    let hResult = this.horizontalCollisionDetection(objA, objB);
+    let vResult = this.verticalCollisionDetection(objA, objB);
+    let result = hResult && vResult;
+    if (callbackFunction == null) {
+      return result;
+    } else {
+      return callbackFunction(result);
+    }
+  }
+  horizontalCollisionDetection(objA, objB, callbackFunction = null) {
+    let objALeftTopVertex = { x: objA.position.x, y: objA.position.y };
+    let objALeftBottomVertex = {
       x: objA.position.x,
       y: objA.position.y + objA.height,
     };
-    objARightTopVertex = {
+    let objARightTopVertex = {
       x: objA.position.x + objA.width,
       y: objA.position.y,
     };
-    objARightBottomVertex = {
+    let objARightBottomVertex = {
       x: objA.position.x + objA.width,
       y: objA.position.y + objA.height,
     };
 
-    objBLeftTopVertex = { x: objB.position.x, y: objB.position.y };
-    objBLeftBottomVertex = {
+    let objBLeftTopVertex = { x: objB.position.x, y: objB.position.y };
+    let objBLeftBottomVertex = {
       x: objB.position.x,
       y: objB.position.y + objB.height,
     };
-    objBRightTopVertex = {
+    let objBRightTopVertex = {
       x: objB.position.x + objB.width,
       y: objB.position.y,
     };
-    ob21RightBottomVertex = {
+    let objBRightBottomVertex = {
       x: objB.position.x + objB.width,
       y: objB.position.y + objB.height,
     };
 
     // Assuming ObjA is impacting ObjB
-    // Check collision from the left
-    if((objARightTopVertex >= objBLeftTopVertex || objARightTopVertex >= objBLeftBottomVertex ||
-      objARightBottomVertex >= objBLeftTopVertex || objARightBottomVertex >= objBLeftBottomVertex) && (true)) {
-        // pending check if its not completly to the right
-        return true;
-      }
-    // Check collision from the right
-    // Check collision from the top
-    // Check collision from the bottom
+    let result = false;
+    // Check collision from the left & right. Checking only x axis.
+    if (
+      (objARightTopVertex.x >= objBLeftTopVertex.x ||
+        objARightTopVertex.x >= objBLeftBottomVertex.x ||
+        objARightBottomVertex.x >= objBLeftTopVertex.x ||
+        objARightBottomVertex.x >= objBLeftBottomVertex.x) &&
+      (objALeftTopVertex.x <= objBRightTopVertex.x ||
+        objALeftTopVertex.x <= objBRightBottomVertex.x ||
+        objALeftBottomVertex.x <= objBRightTopVertex.x ||
+        objALeftBottomVertex.x <= objBRightBottomVertex.x)
+    ) {
+      result = true;
+    }
 
+    if (callbackFunction == null) {
+      return result;
+    } else {
+      return callbackFunction(result);
+    }
+  }
+  verticalCollisionDetection(objA, objB, callbackFunction = null) {
+    let objALeftTopVertex = { x: objA.position.x, y: objA.position.y };
+    let objALeftBottomVertex = {
+      x: objA.position.x,
+      y: objA.position.y + objA.height,
+    };
+    let objARightTopVertex = {
+      x: objA.position.x + objA.width,
+      y: objA.position.y,
+    };
+    let objARightBottomVertex = {
+      x: objA.position.x + objA.width,
+      y: objA.position.y + objA.height,
+    };
+
+    let objBLeftTopVertex = { x: objB.position.x, y: objB.position.y };
+    let objBLeftBottomVertex = {
+      x: objB.position.x,
+      y: objB.position.y + objB.height,
+    };
+    let objBRightTopVertex = {
+      x: objB.position.x + objB.width,
+      y: objB.position.y,
+    };
+    let objBRightBottomVertex = {
+      x: objB.position.x + objB.width,
+      y: objB.position.y + objB.height,
+    };
+
+    // Assuming ObjA is impacting ObjB
+    let result = false;
+    // Check collision from the top & bottom. Checking only y axis.
+    if (
+      (objALeftBottomVertex.y >= objBLeftTopVertex.y ||
+        objALeftBottomVertex.y >= objBRightTopVertex.y ||
+        objARightBottomVertex.y >= objBLeftTopVertex.y ||
+        objARightBottomVertex.y >= objBRightTopVertex.y) &&
+      (objALeftTopVertex.y <= objBLeftBottomVertex.y ||
+        objALeftTopVertex.y <= objBRightBottomVertex.y ||
+        objARightTopVertex.y <= objBRightTopVertex.y ||
+        objARightTopVertex.y <= objBRightBottomVertex.y)
+    ) {
+      result = true;
+    }
+
+    if (callbackFunction == null) {
+      return result;
+    } else {
+      return callbackFunction(result);
+    }
   }
   resolveCollision() {}
 }

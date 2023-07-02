@@ -38,6 +38,7 @@ export class Character {
   /******************************************
    * PROPERTIES WITH DEFAULT VALUES
    ******************************************/
+  currentLevel = null; // the Level sets the current level being played
   #state = null;
   #states = {};
   #sprites = {};
@@ -269,5 +270,18 @@ export class Character {
     let { x, y } = this.position;
     //this.updatePosition(position.x, position.y);
     this.updatePosition(position.x, y);
+    if (
+      this.currentLevel != null &&
+      Array.isArray(this.currentLevel.collidableObjects) &&
+      this.currentLevel.collidableObjects.length > 0
+    ) {
+      this.currentLevel.collidableObjects.forEach((obj, key) => {
+        let colliding = this.physicsEngine.detectCollision(this, obj, (result) => {
+          if(result) {
+            console.log(`Colliding: ${result} with ${obj.platformType} key=${key}`)
+          }
+        });
+      });
+    }
   }
 }

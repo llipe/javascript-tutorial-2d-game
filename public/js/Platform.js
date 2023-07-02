@@ -100,7 +100,7 @@ export class Platform {
     this.spriteParts.push(
       PIXI.Sprite.from("../img/graveyardtilesetnew/png/Tiles/Tile (16).png")
     );
-    
+
     // For all spriteParts (adjust scale)
     this.spriteParts.forEach((value) => {
       value.scale.x = scale;
@@ -212,6 +212,13 @@ export class Platform {
     return { x: this.container.x, y: this.container.y };
   }
 
+  get position() {
+    return { x: this.container.x, y: this.container.y };
+  }
+  /**
+   * DEPRECATED
+   * @returns point in {x: x, y: y} format
+   */
   getPosition() {
     return { x: this.container.x, y: this.container.y };
   }
