@@ -276,11 +276,19 @@ export class Character {
       this.currentLevel.collidableObjects.length > 0
     ) {
       this.currentLevel.collidableObjects.forEach((obj, key) => {
-        let colliding = this.physicsEngine.detectCollision(this, obj, (result) => {
-          if(result) {
-            console.log(`Colliding: ${result} with ${obj.platformType} key=${key}`)
+        let colliding = this.physicsEngine.detectCollision(
+          this,
+          obj,
+          (result) => {
+            if (result) {
+              console.log(
+                `Colliding: ${result} with ${obj.platformType} key=${key}`
+              );
+              let { x, y } = this.physicsEngine.resolveCollision(this, obj);
+              this.updatePosition(x, y);
+            }
           }
-        });
+        );
       });
     }
   }

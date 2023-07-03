@@ -38,6 +38,13 @@ export class PhysicsEngine {
       return callbackFunction(result);
     }
   }
+  /**
+   * Detects collisions comparing with other objects only on the x axis
+   * @param {*} objA Character or Platform object
+   * @param {*} objB Character or Platform object
+   * @param {*} callbackFunction optional callback function with boolean result parameter
+   * @returns when the callback is not set, returns if true objA and objB are colliding
+   */
   horizontalCollisionDetection(objA, objB, callbackFunction = null) {
     let objALeftTopVertex = { x: objA.position.x, y: objA.position.y };
     let objALeftBottomVertex = {
@@ -89,6 +96,13 @@ export class PhysicsEngine {
       return callbackFunction(result);
     }
   }
+  /**
+   * Detects collisions comparing with other objects only on the y axis
+   * @param {*} objA Character or Platform object
+   * @param {*} objB Character or Platform object
+   * @param {*} callbackFunction optional callback function with boolean result parameter
+   * @returns when the callback is not set, returns if true objA and objB are colliding
+   */
   verticalCollisionDetection(objA, objB, callbackFunction = null) {
     let objALeftTopVertex = { x: objA.position.x, y: objA.position.y };
     let objALeftBottomVertex = {
@@ -140,5 +154,40 @@ export class PhysicsEngine {
       return callbackFunction(result);
     }
   }
-  resolveCollision() {}
+  /**
+   * Suggest a new position for A that resolves the collission
+   * @param {*} objA
+   * @param {*} objB
+   * @returns the position point for A that resolves the collision
+   */
+  resolveCollision(objA, objB) {
+    let output = { x: 0, y: 0 };
+    let objAMiddlePoint = {
+      x: (objA.position.x + objA.position.x + objA.width) / 2,
+      y: (objA.position.y + objA.position.y + objA.height) / 2,
+    };
+    let objBMiddlePoint = {
+      x: (objB.position.x + objB.position.x + objB.width) / 2,
+      y: (objB.position.y + objB.position.y + objB.height) / 2,
+    };
+
+    // how to
+    // Revisar a que lado izq, der, arr, abajo debe irse
+    // Luego calcular la posiciomn x, y considerando el alto y el ancho
+
+    // X Axis
+    if (objAMiddlePoint.x < objBMiddlePoint.x) {
+      output.x = Math.min(0, objA.position.x, objB.position.x);
+    } else {
+      output.x = Math.max(objA.position.x, objB.position.x);
+    }
+    // Y Axis
+    if (objAMiddlePoint.y < objBMiddlePoint.y) {
+      output.y = Math.min(0, objA.position.y, objB.position.y);
+    } else {
+      output.y = Math.max(objA.position.y, objB.position.y);
+    }
+
+    return output;
+  }
 }
