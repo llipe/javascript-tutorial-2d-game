@@ -42,13 +42,52 @@ describe("PhysicsEngine.detectCollision", () => {
     assert.deepEqual(seen, [true, false]);
   });
 
-  // Documents current behaviour rather than endorsing it. Edge contact counting
-  // as a collision is what makes a character resolved to exactly rest on a
-  // platform collide again on the very next frame. Phase 1 has to decide
-  // whether resolution leaves a gap or detection switches to strict `>`.
-  // See docs/TESTING.md, "The contact problem".
-  test("treats edge contact as a collision (current behaviour)", () => {
-    assert.equal(engine.detectCollision(box(0, 0), box(10, 0)), true);
+  // Contact is not collision. This is what lets resolution place a character
+  // exactly on a platform surface without it colliding again on the next frame
+  // and jittering. See docs/TESTING.md, "The contact problem".
+  test("treats side-by-side contact as separation", () => {
+    assert.equal(engine.detectCollision(box(0, 0), box(10, 0)), false);
+  });
+
+  test("treats resting on a surface as separation", () => {
+    // A character whose feet are exactly on a platform's top edge.
+    assert.equal(engine.detectCollision(box(0, 0), box(0, 10)), false);
+  });
+
+  // Guards against over-correcting: strict comparisons must still catch a
+  // genuine overlap, however shallow.
+  test("detects a one-unit overlap on x", () => {
+    assert.equal(engine.detectCollision(box(0, 0), box(9, 0)), true);
+  });
+
+  test("detects a one-unit overlap on y", () => {
+    assert.equal(engine.detectCollision(box(0, 0), box(0, 9)), true);
+  });
+
+  // Cross-checks all sixteen comparisons in the two axis functions against an
+  // independent geometric oracle, so a single flipped operator cannot slip by.
+  test("agrees with strict geometric overlap across random pairs", () => {
+    const random = seededRandom(7);
+    const a = box(100, 100, 60, 90);
+    let overlapping = 0;
+
+    for (let i = 0; i < 500; i++) {
+      const b = box(
+        60 + Math.round(random() * 140),
+        60 + Math.round(random() * 160),
+        40 + Math.round(random() * 60),
+        40 + Math.round(random() * 60)
+      );
+      if (overlaps(a, b)) overlapping++;
+      assert.equal(
+        engine.detectCollision(a, b),
+        overlaps(a, b),
+        `disagreement at ${JSON.stringify(b.position)} ${b.width}x${b.height}`
+      );
+    }
+
+    // Guards against a vacuous pass if the generator stopped producing overlaps.
+    assert.ok(overlapping > 50, `only ${overlapping} overlapping pairs generated`);
   });
 });
 
@@ -157,25 +196,31 @@ describe("PhysicsEngine.resolveCollision [SPEC — fails until Phase 1]", () => 
     assert.equal(y, 380, "expected a vertical resolution onto the platform top");
   });
 
-  test("resolution separates the two boxes", () => {
+  // The point of the strict-comparison decision: resolution may place objects
+  // in exact contact, and the engine's own detector must then agree they are
+  // separated. Checked against an independent oracle as well, so the property
+  // cannot pass just because detection and resolution are wrong in step.
+  test("resolution separates the boxes, by both the engine and geometry", () => {
     const random = seededRandom(42);
     const platform = box(100, 400, 200, 80);
+    let resolved = 0;
 
     for (let i = 0; i < 200; i++) {
       const mover = box(
-        60 + random() * 260,
-        330 + random() * 130,
-        40 + random() * 40,
-        40 + random() * 60
+        60 + Math.round(random() * 260),
+        330 + Math.round(random() * 130),
+        40 + Math.round(random() * 40),
+        40 + Math.round(random() * 60)
       );
       if (!overlaps(mover, platform)) continue;
+      resolved++;
 
-      const resolved = engine.resolveCollision(mover, platform);
-      const moved = { ...mover, position: resolved };
-      assert.ok(
-        !overlaps(moved, platform),
-        `still overlapping after resolution: ${JSON.stringify(resolved)}`
-      );
+      const moved = { ...mover, position: engine.resolveCollision(mover, platform) };
+      const where = `resolved to ${JSON.stringify(moved.position)} from ${JSON.stringify(mover.position)}`;
+      assert.ok(!overlaps(moved, platform), `still overlapping: ${where}`);
+      assert.ok(!engine.detectCollision(moved, platform), `still colliding: ${where}`);
     }
+
+    assert.ok(resolved > 20, `only ${resolved} overlapping pairs generated`);
   });
 });

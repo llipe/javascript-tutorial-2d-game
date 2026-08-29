@@ -17,8 +17,8 @@ npm run test:watch     # re-run on file change
 Running `npm test` today gives you this:
 
 ```
-# tests 50
-# pass 38
+# tests 54
+# pass 42
 # fail 12
 ```
 
@@ -119,23 +119,37 @@ The four-way `||` chains in `horizontalCollisionDetection` and `verticalCollisio
 
 This changes the Phase 1 plan. Detection does not need rewriting, only simplifying, and the tests now guard that simplification. It is **resolution** that is broken.
 
-### The contact problem
+### The contact problem — resolved: contact is not collision
 
-`detectCollision` uses `>=`, so two boxes that merely touch edges count as colliding. That is currently harmless, because resolution never produces touching boxes — it teleports things to the origin instead.
+`detectCollision` originally used `>=`, so two boxes that merely touched counted as colliding. That was harmless only because resolution never produced touching boxes — it teleported things to the origin instead.
 
-It stops being harmless the moment resolution is fixed. If resolution places a character exactly on a platform's surface, detection reports a collision again on the very next frame, and the character jitters forever.
+It would have stopped being harmless the moment resolution was fixed. Resolution places a character exactly on a platform's surface; detection would report a collision again on the very next frame; resolution would fire again. The character jitters forever.
 
-So Phase 1 has to make a decision, and the two options are not interchangeable:
+There were two coherent ways out, and they are not interchangeable — picking one commits both halves of the engine:
 
 1. Resolution leaves a sub-pixel gap, and detection keeps `>=`.
-2. Resolution produces exact contact, and detection switches to strict `>`.
+2. Resolution produces exact contact, and detection uses strict `>`.
 
-Option 2 is cleaner. Either way, the choice is now pinned by two tests that will argue with each other if you only change one side:
+**This project took option 2.** Both axis functions in `PhysicsEngine` now compare strictly, so *contact is not collision*: boxes sharing an edge are separated, and only genuine overlap counts. Option 1 works too, but it means every resolution has to invent an epsilon, and the right size of that epsilon depends on how fast things move. Strict comparison needs no magic number.
 
-- `"treats edge contact as a collision (current behaviour)"` in the detection suite
-- `"resolution separates the two boxes"` in the resolution suite
+Three tests pin the decision, and they will argue with each other if a future change only moves one side:
 
-The second is a property test: it generates 200 overlapping box pairs from a seeded PRNG and asserts that resolution actually separates them. Seeded, so a failure reproduces exactly.
+- `"treats side-by-side contact as separation"` and `"treats resting on a surface as separation"` — the semantics themselves
+- `"detects a one-unit overlap on x" / "on y"` — guards against over-correcting into a detector that misses shallow overlaps
+- `"agrees with strict geometric overlap across random pairs"` — cross-checks all sixteen comparisons against an independent oracle across 500 seeded pairs, so a single flipped operator cannot slip through
+- `"resolution separates the boxes, by both the engine and geometry"` — the coherence property: after resolution, *both* the engine's own detector and the independent oracle must agree the boxes are apart
+
+The property tests use a seeded PRNG, so a failure reproduces exactly, and each asserts a minimum number of generated overlaps so it cannot pass vacuously.
+
+#### Consequence: `grounded` needs its own probe
+
+Strict comparison has a knock-on effect that is easy to miss and worth internalising before Phase 1 continues.
+
+A character resting exactly on a platform is **not colliding**. So the `grounded` flag cannot be read off `detectCollision` — by the time you are standing still on solid ground, the engine correctly reports no collision at all.
+
+The standard fix is a *ground sensor*: test a copy of the character's box nudged one unit downward, and treat a collision there as "grounded". That keeps the physics honest — resting objects genuinely are not interpenetrating — while still answering "can I jump right now?".
+
+Expect a one-frame cycle while standing: gravity pulls the character into a shallow overlap, resolution lifts it back to exact contact, and the cycle repeats. That is normal for this style of engine and is invisible at sub-pixel magnitudes. It only becomes visible if resolution overshoots, which is what the coherence property test is there to catch.
 
 ### `KeyRepeat` does not exist
 
