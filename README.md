@@ -22,6 +22,20 @@ Then open <http://localhost:8080>.
 
 The game is a static site, so any static file server works. You do need a server — opening `public/index.html` directly from the filesystem will fail, because `js/index.js` is loaded as an ES module and browsers block module loading over `file://`.
 
+## How to test
+
+```bash
+npm test              # the full suite — currently red on purpose
+npm run test:current  # only what should pass today — green
+npm run test:watch    # re-run on change
+```
+
+Tests use Node's built-in runner (`node:test`), so there is nothing to install.
+
+**`npm test` failing is the expected state right now.** 12 of the 50 tests describe behaviour the physics engine does not have yet — they are the specification for roadmap Phase 1, and they turn green as you build it. Suites tagged `[SPEC — fails until Phase 1]` are the ones in question; `npm run test:current` skips them if you want a clean signal.
+
+📖 **[Full testing strategy →](docs/TESTING.md)** — the four test tiers, why the suite starts red, how to stub the PixiJS global, conventions, and three bugs the tests surfaced that reading the code did not.
+
 ### Controls
 
 | Key | Action |
@@ -80,11 +94,11 @@ If you are picking this up for the first time: `index.js` → `Controller.js` �
 
 - **Physics.** `PhysicsEngine.nextPosition()` uses `delta ^ 2` — that is a bitwise XOR, not exponentiation, so the gravity term is wrong. Vertical velocity is never integrated. Collision resolution returns positions that do not correspond to a real separation axis.
 - **Jump.** `Character.jump()` teleports the character to a random point on screen. It is a placeholder, not a jump.
-- **Collision.** Detection runs and logs, but the resolved position is not usable yet — the character does not actually stand on platforms.
+- **Collision.** Detection is sound — despite appearances, the four-way comparison chains reduce to a correct AABB overlap test, and it is covered by tests. Resolution is the broken half: it returns `{ x: 0, y: 0 }` for every collision, teleporting the character to the top-left corner instead of standing it on the platform.
 - **Attack** is stubbed everywhere (`inputCharacterAttack()` is empty).
 - **Enemies** do not exist in code, though zombie sprites are already in `public/img`.
 - **Unused assets.** The `ninjagirl` sprite set and several ninja states (climb, glide, slide, throw, dead, jump-attack, jump-throw) are on disk but not wired up.
-- **No tests.** `npm test` is still the npm placeholder that exits 1.
+- **Browser tests.** Unit tests cover `PhysicsEngine`, `Controller` and `Character`; `Game`, `Level` and `Platform` need Playwright and are not covered yet. See [docs/TESTING.md](docs/TESTING.md).
 
 ## Dependencies
 
@@ -130,15 +144,19 @@ The one rule worth keeping: **finish the physics before adding content.** Every 
 
 The single highest-value phase, and the one everything else waits on.
 
-- [ ] Fix the gravity integration (`delta ^ 2` → `delta ** 2`) and integrate vertical velocity properly
-- [ ] Make the simulation frame-rate independent — same behaviour at 30fps and 144fps
+The 12 failing `SPEC` tests spell this phase out in detail. Run `npm test` and work the list.
+
+- [ ] Fix the gravity integration (`delta ^ 2` is a bitwise XOR, not exponentiation) and integrate vertical velocity properly
+- [ ] Make the simulation frame-rate independent — same behaviour at 30fps and 144fps, and horizontal displacement should scale with `delta` too, which it currently does not
 - [ ] Implement a real jump: upward impulse, gravity brings it down, no double-jump unless grounded
 - [ ] Rewrite collision resolution to push the character out along the **minimum penetration axis**, so landing on a platform stops downward motion and walking into a wall stops horizontal motion
+- [ ] **Decide the contact question**: either resolution leaves a small gap, or detection switches from `>=` to strict `>`. Resolving to exact contact while detection treats touching as a collision makes the character jitter forever. See [docs/TESTING.md](docs/TESTING.md#the-contact-problem).
+- [ ] Simplify — do not rewrite — the detection code. Those four-way `||` chains are verbose but correct, and tests now guard the simplification.
 - [ ] Track a `grounded` flag and use it to gate jumping and to drive idle/run/jump/fall animation states
 - [ ] Add friction and terminal velocity
 - [ ] Add a debug draw mode: render collision boxes as outlines (`H` already gives you somewhere to put it)
 
-**Done when:** the ninja runs across a floor platform, jumps onto the floating platform, lands on it, and cannot walk through anything.
+**Done when:** `npm test` is green, and the ninja runs across a floor platform, jumps onto the floating platform, lands on it, and cannot walk through anything.
 
 ### Phase 2 — Character states and sprites
 
@@ -146,7 +164,8 @@ The single highest-value phase, and the one everything else waits on.
 
 - [ ] Wire up the unused ninja states already on disk: attack, slide, climb, glide, throw, dead
 - [ ] Build an explicit animation state machine — looping vs. one-shot animations, and legal transitions between states
-- [ ] Fix the sprite-flip logic (currently it mutates scale and anchor on every direction change, which is fragile)
+- [ ] Tidy the sprite-flip logic. It mutates `scale.x` and sets `anchor.x` twice on every direction change, which reads as fragile — but tests confirm it does not accumulate, because `updateSprite()` builds a fresh sprite each time. Worth simplifying for clarity, not correctness.
+- [ ] Stop rebuilding the sprite on every direction change; swap textures on the existing one instead
 - [ ] Separate the collision box from the sprite bounds; a sprite has transparent padding, a hitbox should not
 
 ### Phase 3 — Data-driven worlds
@@ -234,10 +253,13 @@ By far the largest jump in difficulty. Worth attempting only once everything abo
 
 ### Cross-cutting: testing
 
-Worth starting at Phase 1 rather than saving for later. The physics engine is pure computation with no rendering — it is the easiest thing in the codebase to test and the thing most likely to break silently.
+The suite is in place and the physics specification is written — see **[docs/TESTING.md](docs/TESTING.md)** for the full strategy.
 
-- [ ] Add a test runner (Node's built-in `node:test` needs no dependency at all)
-- [ ] Unit-test `PhysicsEngine` — collision detection, resolution, gravity integration
+- [x] Add a test runner (Node's built-in `node:test`, no dependencies)
+- [x] Unit-test `PhysicsEngine` — collision detection, resolution, gravity integration
+- [x] Unit-test `Controller` input mapping and `Character` movement/animation state
+- [ ] Turn the 12 `SPEC` tests green — this *is* Phase 1
+- [ ] Playwright smoke tests for `Game`, `Level` and `Platform`
 - [ ] Unit-test level parsing once Phase 3 exists
 - [ ] Add CI via GitHub Actions
 
