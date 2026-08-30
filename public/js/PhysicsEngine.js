@@ -77,15 +77,17 @@ export class PhysicsEngine {
     // Assuming ObjA is impacting ObjB
     let result = false;
     // Check collision from the left & right. Checking only x axis.
+    // Comparisons are strict: two objects that merely touch are in contact,
+    // not overlapping. See docs/TESTING.md, "The contact problem".
     if (
-      (objARightTopVertex.x >= objBLeftTopVertex.x ||
-        objARightTopVertex.x >= objBLeftBottomVertex.x ||
-        objARightBottomVertex.x >= objBLeftTopVertex.x ||
-        objARightBottomVertex.x >= objBLeftBottomVertex.x) &&
-      (objALeftTopVertex.x <= objBRightTopVertex.x ||
-        objALeftTopVertex.x <= objBRightBottomVertex.x ||
-        objALeftBottomVertex.x <= objBRightTopVertex.x ||
-        objALeftBottomVertex.x <= objBRightBottomVertex.x)
+      (objARightTopVertex.x > objBLeftTopVertex.x ||
+        objARightTopVertex.x > objBLeftBottomVertex.x ||
+        objARightBottomVertex.x > objBLeftTopVertex.x ||
+        objARightBottomVertex.x > objBLeftBottomVertex.x) &&
+      (objALeftTopVertex.x < objBRightTopVertex.x ||
+        objALeftTopVertex.x < objBRightBottomVertex.x ||
+        objALeftBottomVertex.x < objBRightTopVertex.x ||
+        objALeftBottomVertex.x < objBRightBottomVertex.x)
     ) {
       result = true;
     }
@@ -135,15 +137,18 @@ export class PhysicsEngine {
     // Assuming ObjA is impacting ObjB
     let result = false;
     // Check collision from the top & bottom. Checking only y axis.
+    // Comparisons are strict, so a character resting exactly on a platform
+    // surface is in contact rather than colliding, and does not get re-resolved
+    // every frame. See docs/TESTING.md, "The contact problem".
     if (
-      (objALeftBottomVertex.y >= objBLeftTopVertex.y ||
-        objALeftBottomVertex.y >= objBRightTopVertex.y ||
-        objARightBottomVertex.y >= objBLeftTopVertex.y ||
-        objARightBottomVertex.y >= objBRightTopVertex.y) &&
-      (objALeftTopVertex.y <= objBLeftBottomVertex.y ||
-        objALeftTopVertex.y <= objBRightBottomVertex.y ||
-        objARightTopVertex.y <= objBRightTopVertex.y ||
-        objARightTopVertex.y <= objBRightBottomVertex.y)
+      (objALeftBottomVertex.y > objBLeftTopVertex.y ||
+        objALeftBottomVertex.y > objBRightTopVertex.y ||
+        objARightBottomVertex.y > objBLeftTopVertex.y ||
+        objARightBottomVertex.y > objBRightTopVertex.y) &&
+      (objALeftTopVertex.y < objBLeftBottomVertex.y ||
+        objALeftTopVertex.y < objBRightBottomVertex.y ||
+        objARightTopVertex.y < objBRightTopVertex.y ||
+        objARightTopVertex.y < objBRightBottomVertex.y)
     ) {
       result = true;
     }
